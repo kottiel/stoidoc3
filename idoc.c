@@ -943,7 +943,7 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
     print_boolean_record(fpout, "ECREP", labels[record].ecrep, temp_graphic, idoc);
 
     strlcpy(temp_graphic, prefix, sizeof(prefix));
-    strncat(temp_graphic, "Expiration Date.tif", sizeof("Expiration Date"));
+    strncat(temp_graphic, "Expiration Date.tif", sizeof("Expiration Date.tif"));
     print_boolean_record(fpout, "EXPDATE", labels[record].expdate, temp_graphic, idoc);
 
     strlcpy(temp_graphic, prefix, sizeof(prefix));
@@ -987,7 +987,7 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
     print_boolean_record(fpout, "RXONLY", labels[record].rxonly, temp_graphic, idoc);
 
     strlcpy(temp_graphic, prefix, sizeof(prefix));
-    strncat(temp_graphic, "EC Rep.tif", sizeof("EC Rep.tif"));
+    strncat(temp_graphic, "Serial Number.tif", sizeof("Serial Number.tif"));
     print_boolean_record(fpout, "SERIAL", labels[record].serial, temp_graphic, idoc);
 
     strlcpy(temp_graphic, prefix, sizeof(prefix));
@@ -1156,7 +1156,11 @@ int main(int argc, char *argv[]) {
     char *outputfile = (char *) malloc(strlen(argv[1]) + FILE_EXT_LEN);
     sscanf(argv[1], "%[^.]%*[txt]", outputfile);
 
-    strcat(outputfile, "_IDoc (stoidoc).txt");
+    if (strncmpci(prefix, "ISO_", 4) == 0)
+        strcat(outputfile, "_IDoc (stoidoc-i).txt");
+    else
+        strcat(outputfile, "_IDoc (stoidoc).txt");
+
     printf("Creating IDoc file \"%s\"\n", outputfile);
 
     if ((fpout = fopen(outputfile, "w")) == NULL) {
