@@ -193,7 +193,8 @@ int duplicate_column_names(const char *cols) {
         char *token = get_token(buffer, tab_str);
         if (strlen(token)) {
             column_names = (char **) realloc(column_names, sizeof(char *) + count * sizeof(char *));
-            column_names[count] = (char *) malloc(sizeof(char *) + sizeof(token) + 1);
+            //column_names[count] = (char *) malloc(sizeof(char *) + sizeof(token) + 1);
+            column_names[count] = (char *) malloc(sizeof(char *) + sizeof(token) + 3);
             strcpy(column_names[count], token);
             count++;
             free(token);

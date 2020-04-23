@@ -17,10 +17,6 @@
 /* end of line new line character                                        */
 #define LF '\n'
 
-/* if the -F command line parameter is present, F_ is activated          */
-#define F_ "F_"
-//#define F_ ""
-
 /* length of '_idoc (stoidoc 2.0)->txt' extension                        */
 #define FILE_EXT_LEN   36
 
@@ -45,6 +41,9 @@
 
 /* alternate graphics folder path                                        */
 #define ALT_GRAPHICS_PATH  "C:\\Users\\jkottiel\\OneDrive - Teleflex Incorporated\\1 - Teleflex\\Labeling Resources\\Personal Graphics\\"
+
+/* if the -I command line parameter is present, 'ISO' prefix is activated*/
+char prefix[SML] = "";
 
 /* determine the graphics path at run time                               */
 bool alt_path = false;
@@ -791,21 +790,65 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
     // If the cell value is "Y" or "YES', a corresponding record is printed.
     //
     int g_cnt = 1;
-    /*print_graphic0x_record(fpout, &g_cnt, F_ "Caution.tif", labels[record].caution, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "ConsultIFU.tif", labels[record].consultifu, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "Latex.tif", labels[record].latex, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "DoNotUsePakDam.tif", labels[record].donotusedamaged, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "Latex Free.tif", labels[record].latexfree, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "ManInBox.tif", labels[record].maninbox, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "DoNotRe-sterilize.tif", labels[record].noresterilize, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "Non-sterile.tif", labels[record].nonsterile, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "PVC_Free.tif", labels[record].pvcfree, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "REUSABLE.tif", labels[record].reusable, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "Do Not Reuse.tif", labels[record].singleuseonly, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "SINGLEPATIENUSE.tif", labels[record].singlepatientuse, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "ElectroSurIFU.tif", labels[record].electroifu, idoc);
-    print_graphic0x_record(fpout, &g_cnt, F_ "KeepDry.tif", labels[record].keepdry, idoc);*/
-    print_graphic0x_record(fpout, &g_cnt, "Caution.tif", labels[record].caution, idoc);
+    char temp_graphic[MED];
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "Caution.tif", sizeof("Caution.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].caution, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "ConsultIFU.tif", sizeof("ConsultIFU.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].consultifu, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "Latex.tif", sizeof("Latex.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].latex, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "DoNotUsePakDam.tif", sizeof("DoNotUsePakDam.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].donotusedamaged, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "Latex Free.tif", sizeof("Latex Free.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].latexfree, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "ManInBox.tif", sizeof("ManInBox.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].maninbox, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "DoNotRe-sterilize.tif", sizeof("DoNotRe-sterilize.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].noresterilize, idoc);
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+
+    strncat(temp_graphic, "Non-sterile.tif", sizeof("Non-sterile.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].nonsterile, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "PVC_Free.tif", sizeof("PVC_Free.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].pvcfree, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "REUSABLE.tif", sizeof("REUSABLE.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].reusable, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "Do Not Reuse.tif", sizeof("Do Not Reuse.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].singleuseonly, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "SINGLEPATIENUSE.tif", sizeof("SINGLEPATIENUSE.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].singlepatientuse, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "ElectroSurIFU.tif", sizeof("ElectroSurIFU.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].electroifu, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "KeepDry.tif", sizeof("KeepDry.tif"));
+    print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].keepdry, idoc);
+
+    /*print_graphic0x_record(fpout, &g_cnt, "Caution.tif", labels[record].caution, idoc);
     print_graphic0x_record(fpout, &g_cnt, "ConsultIFU.tif", labels[record].consultifu, idoc);
     print_graphic0x_record(fpout, &g_cnt, "Latex.tif", labels[record].latex, idoc);
     print_graphic0x_record(fpout, &g_cnt, "DoNotUsePakDam.tif", labels[record].donotusedamaged, idoc);
@@ -818,7 +861,7 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
     print_graphic0x_record(fpout, &g_cnt, "SINGLEUSE.tif", labels[record].singleuseonly, idoc);
     print_graphic0x_record(fpout, &g_cnt, "SINGLEPATIENUSE.tif", labels[record].singlepatientuse, idoc);
     print_graphic0x_record(fpout, &g_cnt, "ElectroSurIFU.tif", labels[record].electroifu, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "KeepDry.tif", labels[record].keepdry, idoc);
+    print_graphic0x_record(fpout, &g_cnt, "KeepDry.tif", labels[record].keepdry, idoc);*/
     //
     // END of GRAPHIC01 - GRAPHIC14 Fields (optional)
     //
@@ -895,23 +938,63 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
         else
             print_graphic_column_header(fpout, "GS1", labels[record].gs1, "GS1", idoc);
     }
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "EC Rep.tif", sizeof("EC Rep.tif"));
+    print_boolean_record(fpout, "ECREP", labels[record].ecrep, temp_graphic, idoc);
 
-/*    print_boolean_record(fpout, "ECREP", labels[record].ecrep, F_ "EC Rep.tif", idoc);
-    print_boolean_record(fpout, "EXPDATE", labels[record].expdate, F_ "Expiration Date.tif", idoc);
-    print_boolean_record(fpout, "KEEPAWAYHEAT", labels[record].keepawayheat, F_ "KeepAwayHeat.tif", idoc);
-    print_boolean_record(fpout, "LOTGRAPHIC", labels[record].lotgraphic, F_ "Lot.tif", idoc);
-    print_boolean_record(fpout, "MANUFACTURER", labels[record].manufacturer, F_ "Manufacturer.tif", idoc);
-    print_boolean_record(fpout, "MFGDATE", labels[record].mfgdate, F_ "DateofManufacture.tif", idoc);
-    print_boolean_record(fpout, "PHTDEHP", labels[record].phtdehp, "PHT-DEHP.tif", idoc);
-    print_boolean_record(fpout, "PHTBBP", labels[record].phtbbp, F_ "PHT-BBP.tif", idoc);
-    print_boolean_record(fpout, "PHTDINP", labels[record].phtdinp, F_ "PHT-DINP.tif", idoc);
-    print_boolean_record(fpout, "REFNUMBER", labels[record].refnumber, F_ "REF.tif", idoc);
-    print_boolean_record(fpout, "REF", labels[record].ref, F_ "REF.tif", idoc);
-    print_boolean_record(fpout, "RXONLY", labels[record].rxonly, F_ "RX Only.tif", idoc);
-    print_boolean_record(fpout, "SERIAL", labels[record].serial, F_ "Serial Number.tif", idoc);
-    print_boolean_record(fpout, "TFXLOGO", labels[record].tfxlogo, F_ "TeleflexMedical.tif", idoc);*/
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "Expiration Date.tif", sizeof("Expiration Date"));
+    print_boolean_record(fpout, "EXPDATE", labels[record].expdate, temp_graphic, idoc);
 
-    print_boolean_record(fpout, "ECREP", labels[record].ecrep, "EC Rep.tif", idoc);
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "KeepAwayHeat.tif", sizeof("KeepAwayHeat.tif"));
+    print_boolean_record(fpout, "KEEPAWAYHEAT", labels[record].keepawayheat, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "Lot.tif", sizeof("Lot.tif"));
+    print_boolean_record(fpout, "LOTGRAPHIC", labels[record].lotgraphic, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "Manufacturer.tif", sizeof("Manufacturer.tif"));
+    print_boolean_record(fpout, "MANUFACTURER", labels[record].manufacturer, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "DateofManufacture.tif", sizeof("DateofManufacture.tif"));
+    print_boolean_record(fpout, "MFGDATE", labels[record].mfgdate, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "PHT-DEHP.tif", sizeof("PHT-DEHP.tif"));
+    print_boolean_record(fpout, "PHTDEHP", labels[record].phtdehp, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "PHT-BBP.tif", sizeof("PHT-BBP.tif"));
+    print_boolean_record(fpout, "PHTBBP", labels[record].phtbbp, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "PHT-DINP.tif", sizeof("PHT-DINP.tif"));
+    print_boolean_record(fpout, "PHTDINP", labels[record].phtdinp, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "REF.tif", sizeof("REF.tif"));
+    print_boolean_record(fpout, "REFNUMBER", labels[record].refnumber, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "REF.tif", sizeof("REF.tif"));
+    print_boolean_record(fpout, "REF", labels[record].ref, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "RX Only.tif", sizeof("RX Only.tif"));
+    print_boolean_record(fpout, "RXONLY", labels[record].rxonly, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "EC Rep.tif", sizeof("EC Rep.tif"));
+    print_boolean_record(fpout, "SERIAL", labels[record].serial, temp_graphic, idoc);
+
+    strlcpy(temp_graphic, prefix, sizeof(prefix));
+    strncat(temp_graphic, "TeleflexMedical.tif", sizeof("TeleflexMedical.tif"));
+    print_boolean_record(fpout, "TFXLOGO", labels[record].tfxlogo, temp_graphic, idoc);
+
+    /*print_boolean_record(fpout, "ECREP", labels[record].ecrep, "EC Rep.tif", idoc);
     print_boolean_record(fpout, "EXPDATE", labels[record].expdate, "Expiration Date.tif", idoc);
     print_boolean_record(fpout, "KEEPAWAYHEAT", labels[record].keepawayheat, "KeepAwayHeat.tif", idoc);
     print_boolean_record(fpout, "LOTGRAPHIC", labels[record].lotgraphic, "Lot.tif", idoc);
@@ -924,7 +1007,7 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
     print_boolean_record(fpout, "REF", labels[record].ref, "REF.tif", idoc);
     print_boolean_record(fpout, "RXONLY", labels[record].rxonly, "RX Only.tif", idoc);
     print_boolean_record(fpout, "SERIAL", labels[record].serial, "Serial Number.tif", idoc);
-    print_boolean_record(fpout, "TFXLOGO", labels[record].tfxlogo, "TeleflexMedical.tif", idoc);
+    print_boolean_record(fpout, "TFXLOGO", labels[record].tfxlogo, "TeleflexMedical.tif", idoc);*/
 
     print_boolean_column_header(fpout, "SIZELOGO", labels[record].sizelogo, idoc);
 
@@ -1008,15 +1091,16 @@ int main(int argc, char *argv[]) {
 
     FILE *fp, *fpout;
 
-    if ((argc != 2) && (argc != 3)) {
-        printf("usage: %s filename.txt [-J] [-F] [-n]\n", argv[0]);
+    if ((argc != 2) && (argc != 3) && (argc != 4)) {
+        printf("usage: %s filename.txt [-J] [-I] [-n]\n", argv[0]);
         return EXIT_FAILURE;
     }
 
     // check for optional command line parameter '-J'
     if (argc > 2) {
         if (((argv[2] != NULL) && (strncmpci(argv[2], "-J", 2) == 0)) ||
-            ((argv[3] != NULL) && (strncmpci(argv[3], "-J", 2) == 0))) {
+            ((argv[3] != NULL) && (strncmpci(argv[3], "-J", 2) == 0)) ||
+            ((argv[4] != NULL) && (strncmpci(argv[4], "-J", 2) == 0))) {
             alt_path = true;
         }
     }
@@ -1026,9 +1110,21 @@ int main(int argc, char *argv[]) {
     // GTIN, IPN, OLDLABEL, OLDTEMPLATE, DESCRIPTION, PREVLABEL and PREVTEMPLATE
     if (argc > 2) {
         if (((argv[2] != NULL) && (strncmpci(argv[2], "-n", 2) == 0)) ||
-            ((argv[3] != NULL) && (strncmpci(argv[3], "-n", 2) == 0))) {
+            ((argv[3] != NULL) && (strncmpci(argv[3], "-n", 2) == 0)) ||
+            ((argv[4] != NULL) && (strncmpci(argv[4], "-n", 2) == 0))) {
             non_SAP_fields = true;
             printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
+        }
+    }
+
+    // check for optional command line parameter '-I'
+    // -I substitutes ISO graphics
+    if (argc > 2) {
+        if (((argv[2] != NULL) && (strncmpci(argv[2], "-I", 2) == 0)) ||
+            ((argv[3] != NULL) && (strncmpci(argv[3], "-I", 2) == 0)) ||
+            ((argv[4] != NULL) && (strncmpci(argv[4], "-I", 2) == 0))) {
+            strlcpy(prefix, "ISO_", SML);
+            printf("Generating IDoc with 'ISO_' prefix for graphics. Run program without '-I' flag to remove.\n");
         }
     }
 
