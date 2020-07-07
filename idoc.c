@@ -809,7 +809,7 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
     print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].donotusedamaged, idoc);
 
     strlcpy(temp_graphic, prefix, sizeof(prefix));
-    strncat(temp_graphic, "Latex Free.tif", sizeof("Latex Free.tif"));
+    strncat(temp_graphic, "LatexFree.tif", sizeof("F_LatexFree3.tif"));
     print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].latexfree, idoc);
 
     strlcpy(temp_graphic, prefix, sizeof(prefix));
@@ -1079,6 +1079,9 @@ int main(int argc, char *argv[]) {
 
     typedef struct control_numbers Ctrl;
 
+    // boolean to track whether "Label Data" -L flag is set
+    bool label_data = false;
+
     Ctrl idoc = {"2541435", 0, 1, 0, 0};
 
     if (!check_lookup_array())
@@ -1089,42 +1092,68 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    FILE *fp, *fpout;
+    FILE *fp, *fpout_idoc, *fpout_data;
 
     if ((argc != 2) && (argc != 3) && (argc != 4)) {
-        printf("usage: %s filename.txt [-J] [-I] [-n]\n", argv[0]);
+        printf("usage: %s filename.txt [-J] [-I] [-L] [-n]\n", argv[0]);
         return EXIT_FAILURE;
     }
 
-    // check for optional command line parameter '-J'
-    if (argc > 2) {
-        if (((argv[2] != NULL) && (strncmpci(argv[2], "-J", 2) == 0)) ||
-            ((argv[3] != NULL) && (strncmpci(argv[3], "-J", 2) == 0)) ||
-            ((argv[4] != NULL) && (strncmpci(argv[4], "-J", 2) == 0))) {
+    // check for optional command line parameters '-J', '-I', 'L' and 'n':
+    // -J turns the alt_path to true which substitutes ALT_GRAPHICS_PATH for GRAPHICS_PATH
+    // -I substitutes ISO graphics
+    // -L creates a second "Label Data" output file
+    // -n prints "non-standard" column names in the IDoc: GTIN, IPN, OLDLABEL, OLDTEMPLATE, DESCRIPTION, PREVLABEL and PREVTEMPLATE
+    if (argc > 5) {
+        if ((argv[5] != NULL) && (strncmpci(argv[5], "-J", 2) == 0))
             alt_path = true;
-        }
-    }
-
-    // check for optional command line parameter '-n'
-    // -n prints "non-standard" column names in the IDoc:
-    // GTIN, IPN, OLDLABEL, OLDTEMPLATE, DESCRIPTION, PREVLABEL and PREVTEMPLATE
-    if (argc > 2) {
-        if (((argv[2] != NULL) && (strncmpci(argv[2], "-n", 2) == 0)) ||
-            ((argv[3] != NULL) && (strncmpci(argv[3], "-n", 2) == 0)) ||
-            ((argv[4] != NULL) && (strncmpci(argv[4], "-n", 2) == 0))) {
+        else if ((argv[5] != NULL) && (strncmpci(argv[5], "-L", 2) == 0))
+            label_data = true;
+        else if ((argv[5] != NULL) && (strncmpci(argv[5], "-I", 2) == 0)) {
+            strlcpy(prefix, "ISO_", SML);
+            printf("Generating IDoc with 'ISO_' prefix for graphics. Run program without '-I' flag to remove.\n");
+        } else if ((argv[5] != NULL) && (strncmpci(argv[5], "-n", 2) == 0)) {
             non_SAP_fields = true;
             printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
         }
     }
-
-    // check for optional command line parameter '-I'
-    // -I substitutes ISO graphics
-    if (argc > 2) {
-        if (((argv[2] != NULL) && (strncmpci(argv[2], "-I", 2) == 0)) ||
-            ((argv[3] != NULL) && (strncmpci(argv[3], "-I", 2) == 0)) ||
-            ((argv[4] != NULL) && (strncmpci(argv[4], "-I", 2) == 0))) {
+    if (argc > 4) {
+        if ((argv[4] != NULL) && (strncmpci(argv[4], "-J", 2) == 0))
+            alt_path = true;
+        else if ((argv[4] != NULL) && (strncmpci(argv[4], "-L", 2) == 0))
+            label_data = true;
+        else if ((argv[4] != NULL) && (strncmpci(argv[4], "-I", 2) == 0)) {
             strlcpy(prefix, "ISO_", SML);
             printf("Generating IDoc with 'ISO_' prefix for graphics. Run program without '-I' flag to remove.\n");
+        } else if ((argv[4] != NULL) && (strncmpci(argv[4], "-n", 2) == 0)) {
+            non_SAP_fields = true;
+            printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
+        }
+    } else if (argc > 3) {
+        if ((argv[3] != NULL) && (strncmpci(argv[3], "-J", 2) == 0))
+            alt_path = true;
+        else if ((argv[3] != NULL) && (strncmpci(argv[3], "-L", 2) == 0))
+            label_data = true;
+        if ((argv[3] != NULL) && (strncmpci(argv[3], "-I", 2) == 0)) {
+            strlcpy(prefix, "ISO_", SML);
+            printf("Generating IDoc with 'ISO_' prefix for graphics. Run program without '-I' flag to remove.\n");
+        }
+        if ((argv[3] != NULL) && (strncmpci(argv[3], "-n", 2) == 0)) {
+            non_SAP_fields = true;
+            printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
+        }
+    } else if (argc > 2) {
+        if ((argv[2] != NULL) && (strncmpci(argv[2], "-J", 2) == 0))
+            alt_path = true;
+        else if ((argv[2] != NULL) && (strncmpci(argv[2], "-L", 2) == 0))
+            label_data = true;
+        if ((argv[2] != NULL) && (strncmpci(argv[2], "-I", 2) == 0)) {
+            strlcpy(prefix, "ISO_", SML);
+            printf("Generating IDoc with 'ISO_' prefix for graphics. Run program without '-I' flag to remove.\n");
+        }
+        if ((argv[2] != NULL) && (strncmpci(argv[2], "-n", 2) == 0)) {
+            non_SAP_fields = true;
+            printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
         }
     }
 
@@ -1153,37 +1182,53 @@ int main(int argc, char *argv[]) {
     // the labels array must be sorted by label number
     sort_labels(labels);
 
-    char *outputfile = (char *) malloc(strlen(argv[1]) + FILE_EXT_LEN);
-    sscanf(argv[1], "%[^.]%*[txt]", outputfile);
+    // output files (the idoc file and the label_data file)
+    char *output_idocfile = (char *) malloc(strlen(argv[1]) + FILE_EXT_LEN);
+    sscanf(argv[1], "%[^.]%*[txt]", output_idocfile);
 
-    if (strncmpci(prefix, "ISO_", 4) == 0)
-        strcat(outputfile, "_IDoc (stoidoc-i).txt");
-    else
-        strcat(outputfile, "_IDoc (stoidoc).txt");
-
-    printf("Creating IDoc file \"%s\"\n", outputfile);
-
-    if ((fpout = fopen(outputfile, "w")) == NULL) {
-        printf("Could not open output file %s", outputfile);
+    if (strncmpci(prefix, "ISO_", 4) == 0) {
+        strcat(output_idocfile, "_IDoc (stoidoc-i).txt");
+    } else {
+        strcat(output_idocfile, "_IDoc (stoidoc).txt");
     }
 
-    if (print_control_record(fpout, &idoc) != 0)
+    printf("Creating IDoc file \"%s\"\n", output_idocfile);
+
+    if ((fpout_idoc = fopen(output_idocfile, "w")) == NULL) {
+        printf("Could not open output file %s", output_idocfile);
+    }
+
+    char *output_datafile;
+    if (label_data) {
+        output_datafile = (char *) malloc(strlen(argv[1]) + FILE_EXT_LEN);
+        sscanf(argv[1], "%[^.]%*[txt]", output_datafile);
+        strcat(output_datafile, "_labeldata.txt");
+        if ((fpout_data = fopen(output_datafile, "w")) == NULL) {
+            printf("Could not open output file %s", output_datafile);
+        }
+    }
+
+    if (print_control_record(fpout_idoc, &idoc) != 0)
         return EXIT_FAILURE;
 
     {
         int i = 1;
         while (i < spreadsheet_row_number) {
-            if ((print_label_idoc_records(fpout, labels, i, &idoc)))
+            // if label_data, include fpout_data
+            if ((print_label_idoc_records(fpout_idoc, labels, i, &idoc)))
                 i++;
             else {
                 printf("Content error in text-delimited spreadsheet, line %d. Aborting.\n", i);
                 return EXIT_FAILURE;
             }
+
         }
     }
 
-    fclose(fpout);
-    free(outputfile);
+    fclose(fpout_idoc);
+    fclose(fpout_data);
+    free(output_idocfile);
+    free(output_datafile);
 
     for (int i = 0; i < spreadsheet_row_number; i++)
         free(spreadsheet[i]);
